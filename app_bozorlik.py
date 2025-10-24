@@ -106,6 +106,72 @@ def infer_category(name: str) -> str:
             return cat
     return "Boshqa"
 
+def parse_bulk_lines(text: str):
+    """
+    Qatorlar misollar:
+      - "Guruch 3 kg Quruq oziq-ovqat"
+      - "Zira; 0.05; kg; Quruq oziq-ovqat"
+      - "Kolbasa, 2, dona" (kategoriya avtomatik)
+      - "Suv | 1.5 | litr | Ichimliklar"
+    Qaytadi: list[dict(item, unit, category, plan_qty)]
+    """
+    import re
+    rows = []
+    if not text:
+        return rows
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        parts = re.split(r"[;,|\t]", line)
+        parts = [p.strip() for p in parts if p.strip()]
+        item, unit, cat, qty = None, None, None, None
+        if len(parts) >= 3:
+            def is_num(x):
+                try:
+                    float(x.replace(",", ".")); return True
+                except Exception:
+                    return False
+            p0, p1, p2 = parts[0], parts[1], parts[2]
+            if is_num(p1):  # item, qty, unit, [cat]
+                item, qty = p0, float(p1.replace(",", "."))
+                unit = p2.lower()
+                cat = parts[3] if len(parts) > 3 else None
+            elif is_num(p2):  # item, unit, qty, [cat]
+                item = p0
+                unit = p1.lower()
+                qty = float(p2.replace(",", "."))
+                cat = parts[3] if len(parts) > 3 else None
+            else:
+                item = p0
+                unit = p1.lower()
+                qty = None
+                cat = p2
+        else:
+            # Erkin gapdan ajratish: "Guruch 3 kg ..." ko‘rinishida
+            tokens = line.split()
+            num_idx = next((i for i, t in enumerate(tokens)
+                            if re.match(r"^\d+[\.,]?\d*$", t)), None)
+            if num_idx is not None and num_idx + 1 < len(tokens):
+                item = " ".join(tokens[:num_idx])
+                qty = float(tokens[num_idx].replace(",", "."))
+                unit = tokens[num_idx + 1].lower()
+                cat = " ".join(tokens[num_idx + 2:]) or None
+            else:
+                item = line
+        item = (item or "").strip()
+        if not item:
+            continue
+        unit = unit or infer_unit(item)
+        cat = cat or infer_category(item)
+        if qty is None:
+            qty = 1.0 if unit in UNITS_FLOAT else 1
+        if unit in UNITS_FLOAT:
+            qty = round(float(qty), 3)
+        else:
+            qty = int(round(float(qty)))
+        rows.append({"item": item.title(), "category": cat, "unit": unit, "plan_qty": qty})
+    return rows
 
 def fmt_money(x: float) -> str:
     try:
@@ -509,3 +575,4 @@ with TAB3:
 
 st.markdown("---")
 st.caption("© Bozorlik ilovasi — reja, chek va tahlil bitta joyda. QQS avtomatik ajratiladi.")
+
