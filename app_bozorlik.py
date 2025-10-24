@@ -28,7 +28,7 @@ except Exception:
 DEFAULT_QQS = 12.0  # %
 UNITS_FLOAT = {"kg", "litr"}
 UNITS_INT = {"dona", "karobka"}
-ALL_UNITS = ["kg", "litr", "dona", "karobka"]
+ALL_UNITS = ["kg", "litr", "dona", "karobka", "bog'", "qadoq", "pachka"]
 
 DEFAULT_CATEGORIES = [
     "Meva-sabzavot",
@@ -44,19 +44,62 @@ DEFAULT_CATEGORIES = [
 
 # Tez tanlash uchun bir nechta tayyor mahsulotlar (unit + default category)
 COMMON_ITEMS = {
-    "anor": ("kg", "Meva-sabzavot"),
-    "olma": ("kg", "Meva-sabzavot"),
-    "uzum": ("kg", "Meva-sabzavot"),
-    "shaftoli": ("kg", "Meva-sabzavot"),
+    # --- Meva-sabzavotlar ---
     "piyoz": ("kg", "Meva-sabzavot"),
+    "sabzi (qizil)": ("kg", "Meva-sabzavot"),
+    "sabzi (sariq)": ("kg", "Meva-sabzavot"),
+    "qovoq": ("dona", "Meva-sabzavot"),
+    "baqlajon": ("kg", "Meva-sabzavot"),
+    "kabachki": ("kg", "Meva-sabzavot"),
+    "bolgarskiy (qizil)": ("kg", "Meva-sabzavot"),
+    "bolgarskiy (yashil)": ("kg", "Meva-sabzavot"),
+    "pomidor": ("kg", "Meva-sabzavot"),
+    "zelen (ko'kat)": ("bog'", "Meva-sabzavot"),
+    "chesnok": ("kg", "Meva-sabzavot"),
+    "karam": ("dona", "Meva-sabzavot"),
     "kartoshka": ("kg", "Meva-sabzavot"),
+
+    # --- Don va quruq oziq-ovqat ---
+    "makaron": ("kg", "Quruq oziq-ovqat"),
+    "guruch (alanga)": ("kg", "Quruq oziq-ovqat"),
+    "grechka": ("kg", "Quruq oziq-ovqat"),
+    "mosh": ("kg", "Quruq oziq-ovqat"),
+    "un (1-sort)": ("kg", "Quruq oziq-ovqat"),
     "shakar": ("kg", "Quruq oziq-ovqat"),
     "tuz": ("kg", "Quruq oziq-ovqat"),
-    "non": ("dona", "Non & bakery"),
-    "shokolad": ("dona", "Shirinliklar"),
+
+    # --- Yog', ichimlik va boshqa mahsulotlar ---
+    "moy (o'simlik)": ("litr", "Ichimliklar"),
+    "kofe": ("qadoq", "Ichimliklar"),
+    "choy": ("pachka", "Ichimliklar"),
     "suv": ("litr", "Ichimliklar"),
     "sut": ("karobka", "Sut mahsulotlari"),
+
+    # --- Mevalar ---
+    "olma": ("kg", "Meva-sabzavot"),
+    "nok": ("kg", "Meva-sabzavot"),
+    "anor": ("kg", "Meva-sabzavot"),
+    "mango": ("dona", "Meva-sabzavot"),
+    "xurmo (dates)": ("kg", "Meva-sabzavot"),
+    "uzum": ("kg", "Meva-sabzavot"),
+    "limon": ("kg", "Meva-sabzavot"),
+    "mandarin": ("kg", "Meva-sabzavot"),
+    "banan": ("kg", "Meva-sabzavot"),
+
+    # --- Yeryong‘oq va yong‘oqlar ---
+    "yong'oq (mag'iz)": ("kg", "Quruq oziq-ovqat"),
+    "bodom (mag'iz)": ("kg", "Quruq oziq-ovqat"),
+    "mayiz": ("kg", "Quruq oziq-ovqat"),
+    "yeryong'oq": ("kg", "Quruq oziq-ovqat"),
+
+    # --- Hayvoniy mahsulotlar ---
+    "tuxum": ("dona", "Go'sht mahsulotlari"),
+
+    # --- Qo‘shimcha asosiylar ---
+    "non": ("dona", "Non & bakery"),
+    "shokolad": ("dona", "Shirinliklar"),
 }
+
 
 PLAN_COLS = ["item", "category", "unit", "plan_qty"]
 BUY_COLS = PLAN_COLS + ["bought", "actual_qty", "unit_price_gross", "line_gross", "line_net", "line_vat"]
@@ -575,4 +618,5 @@ with TAB3:
 
 st.markdown("---")
 st.caption("© Bozorlik ilovasi — reja, chek va tahlil bitta joyda. QQS avtomatik ajratiladi.")
+
 
