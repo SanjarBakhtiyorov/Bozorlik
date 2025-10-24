@@ -249,12 +249,14 @@ yoki
 - Suv 1.5 litr Ichimliklar
 """)
         bulk_text = st.text_area(
-            "Ro'yxatni kiriting", height=180,
-            placeholder="Guruch, 3, kg, Quruq oziq-ovqat
+    "Ro'yxatni kiriting",
+    height=180,
+    placeholder="""Guruch, 3, kg, Quruq oziq-ovqat
 Zira 0.05 kg Quruq oziq-ovqat
 Kolbasa, 2, dona
-Suv 1.5 litr Ichimliklar",
-        )
+Suv 1.5 litr Ichimliklar""",
+)
+
         if st.button("➕ Bulk qo'shish"):
             rows = parse_bulk_lines(bulk_text)
             if rows:
@@ -467,4 +469,5 @@ with TAB3:
 
 st.markdown("---")
 st.caption("© Bozorlik ilovasi — reja, chek va tahlil bitta joyda. QQS avtomatik ajratiladi.")
+
 
