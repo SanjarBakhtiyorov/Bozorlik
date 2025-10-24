@@ -205,23 +205,40 @@ with TAB1:
 
     with st.expander("➕ Tez qo'shish (tayyor mahsulotlar)"):
         c1, c2 = st.columns([2, 1])
-        chosen = c1.selectbox("Mahsulot tanlang", options=[""] + sorted(COMMON_ITEMS.keys()))
+        chosen = c1.selectbox(
+            "Mahsulot tanlang",
+            options=[""] + sorted(COMMON_ITEMS.keys()),
+            key="plan_quick_item",
+        )
         if chosen:
             unit, cat = COMMON_ITEMS[chosen]
         else:
             unit, cat = "kg", "Boshqa"
         plan_qty_default = 1.0 if unit in UNITS_FLOAT else 1
         qty = c2.number_input(
-            "Reja miqdori", min_value=0.0,
+            "Reja miqdori",
+            min_value=0.0,
             step=0.1 if unit in UNITS_FLOAT else 1.0,
             value=float(plan_qty_default),
             format="%.3f" if unit in UNITS_FLOAT else "%.0f",
+            key="plan_qty_input",
         )
-        unit_sel = st.selectbox("Birlik", options=ALL_UNITS, index=ALL_UNITS.index(unit))
-        cat_sel = st.selectbox("Kategoriya", options=DEFAULT_CATEGORIES,
-                               index=DEFAULT_CATEGORIES.index(cat) if cat in DEFAULT_CATEGORIES else DEFAULT_CATEGORIES.index("Boshqa"))
-        display_name = chosen.title() if chosen else st.text_input("Yangi mahsulot nomi (erkin)", value="")
-        add_ok = st.button("🔹 Rejaga qo'shish")
+        unit_sel = st.selectbox(
+            "Birlik",
+            options=ALL_UNITS,
+            index=ALL_UNITS.index(unit),
+            key="plan_unit",
+        )
+        cat_sel = st.selectbox(
+            "Kategoriya",
+            options=DEFAULT_CATEGORIES,
+            index=DEFAULT_CATEGORIES.index(cat) if cat in DEFAULT_CATEGORIES else DEFAULT_CATEGORIES.index("Boshqa"),
+            key="plan_cat",
+        )
+        display_name = chosen.title() if chosen else st.text_input(
+            "Yangi mahsulot nomi (erkin)", value="", key="plan_free_name"
+        )
+        add_ok = st.button("🔹 Rejaga qo'shish", key="plan_add_btn")
         if add_ok and display_name.strip():
             new_row = {
                 "item": display_name.strip().title(),
@@ -236,28 +253,27 @@ with TAB1:
 
     # 📝 Erkin (bulk) kiritish: istalgan mahsulot(lar)
     with st.expander("📝 Erkin kiritish: bir nechta qator bilan (bulk)"):
-        st.write("""
-Har bir qator bitta mahsulot:
-`Mahsulot, qty, unit, (ixtiyoriy) kategoriya`
-yoki
-`Mahsulot qty unit [kategoriya]`.
+        st.write(
+            """
+Har bir qator bitta mahsulot: `Mahsulot, qty, unit, (ixtiyoriy) kategoriya` yoki `Mahsulot qty unit [kategoriya]`.
 
 **Misollar:**
 - Guruch, 3, kg, Quruq oziq-ovqat
 - Zira 0.05 kg Quruq oziq-ovqat
 - Kolbasa, 2, dona
 - Suv 1.5 litr Ichimliklar
-""")
+            """
+        )
         bulk_text = st.text_area(
-    "Ro'yxatni kiriting",
-    height=180,
-    placeholder="""Guruch, 3, kg, Quruq oziq-ovqat
+            "Ro'yxatni kiriting",
+            height=180,
+            placeholder="""Guruch, 3, kg, Quruq oziq-ovqat
 Zira 0.05 kg Quruq oziq-ovqat
 Kolbasa, 2, dona
 Suv 1.5 litr Ichimliklar""",
-)
-
-        if st.button("➕ Bulk qo'shish"):
+            key="bulk_textarea",
+        )
+        if st.button("➕ Bulk qo'shish", key="bulk_add_btn"):
             rows = parse_bulk_lines(bulk_text)
             if rows:
                 st.session_state.plan_df = pd.concat(
@@ -328,12 +344,34 @@ with TAB2:
     # ➕ Bozorda sahifasida ham yangi mahsulot qo'shish (rejadan mustaqil)
     with st.expander("➕ Bozorda yangi mahsulot qo'shish (ad-hoc)"):
         c1, c2, c3, c4 = st.columns([2, 1, 1, 1])
-        new_item = c1.text_input("Mahsulot nomi", "")
-        new_unit = c2.selectbox("Birlik", options=ALL_UNITS, index=ALL_UNITS.index(infer_unit(new_item)) if new_item else 0)
-        new_qty = c3.number_input("Miqdor", min_value=0.0, step=0.1, value=1.0, format="%.3f")
-        new_price = c4.number_input("Birlik narxi (Gross)", min_value=0.0, step=100.0)
-        new_cat = st.selectbox("Kategoriya", options=DEFAULT_CATEGORIES, index=DEFAULT_CATEGORIES.index(infer_category(new_item)) if new_item else DEFAULT_CATEGORIES.index("Boshqa"))
-        if st.button("➕ Qo'shish (Bozorda)") and new_item.strip():
+        new_item = c1.text_input("Mahsulot nomi", "", key="adhoc_item")
+        new_unit = c2.selectbox(
+            "Birlik",
+            options=ALL_UNITS,
+            index=ALL_UNITS.index(infer_unit(new_item)) if new_item else 0,
+            key="adhoc_unit",
+        )
+        new_qty = c3.number_input(
+            "Miqdor",
+            min_value=0.0,
+            step=0.1,
+            value=1.0,
+            format="%.3f",
+            key="adhoc_qty",
+        )
+        new_price = c4.number_input(
+            "Birlik narxi (Gross)",
+            min_value=0.0,
+            step=100.0,
+            key="adhoc_price",
+        )
+        new_cat = st.selectbox(
+            "Kategoriya",
+            options=DEFAULT_CATEGORIES,
+            index=DEFAULT_CATEGORIES.index(infer_category(new_item)) if new_item else DEFAULT_CATEGORIES.index("Boshqa"),
+            key="adhoc_cat",
+        )
+        if st.button("➕ Qo'shish (Bozorda)", key="adhoc_add_btn") and new_item.strip():
             row = {
                 "item": new_item.strip().title(),
                 "category": new_cat,
@@ -346,7 +384,9 @@ with TAB2:
                 "line_net": 0,
                 "line_vat": 0,
             }
-            st.session_state.buy_df = pd.concat([st.session_state.buy_df, pd.DataFrame([row])], ignore_index=True)
+            st.session_state.buy_df = pd.concat(
+                [st.session_state.buy_df, pd.DataFrame([row])], ignore_index=True
+            )
             st.success("Yangi pozitsiya qo'shildi — pastdagi jadvalda ko'rasiz")
 
     # Editable purchase table
@@ -469,5 +509,3 @@ with TAB3:
 
 st.markdown("---")
 st.caption("© Bozorlik ilovasi — reja, chek va tahlil bitta joyda. QQS avtomatik ajratiladi.")
-
-
