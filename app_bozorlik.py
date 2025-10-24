@@ -236,16 +236,18 @@ with TAB1:
 
     # 📝 Erkin (bulk) kiritish: istalgan mahsulot(lar)
     with st.expander("📝 Erkin kiritish: bir nechta qator bilan (bulk)"):
-        st.write(
-            "Har bir qator bitta mahsulot: `Mahsulot, qty, unit, (ixtiyoriy) kategoriya` yoki `Mahsulot qty unit [kategoriya]`.
+        st.write("""
+Har bir qator bitta mahsulot:
+`Mahsulot, qty, unit, (ixtiyoriy) kategoriya`
+yoki
+`Mahsulot qty unit [kategoriya]`.
 
-"
-            "Misollar:
-- `Guruch, 3, kg, Quruq oziq-ovqat`
-- `Zira 0.05 kg Quruq oziq-ovqat`
-- `Kolbasa, 2, dona`
-- `Suv 1.5 litr Ichimliklar`"
-        )
+**Misollar:**
+- Guruch, 3, kg, Quruq oziq-ovqat
+- Zira 0.05 kg Quruq oziq-ovqat
+- Kolbasa, 2, dona
+- Suv 1.5 litr Ichimliklar
+""")
         bulk_text = st.text_area(
             "Ro'yxatni kiriting", height=180,
             placeholder="Guruch, 3, kg, Quruq oziq-ovqat
@@ -465,3 +467,4 @@ with TAB3:
 
 st.markdown("---")
 st.caption("© Bozorlik ilovasi — reja, chek va tahlil bitta joyda. QQS avtomatik ajratiladi.")
+
